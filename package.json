@@ -1,0 +1,32 @@
+{
+  "name": "node-aliyun-dms",
+  "version": "1.0.0",
+  "description": "aliyun direct mail service for nodejs",
+  "homepage": "https://github.com/MT-Libraries/node-aliyun-dms",
+  "main": "./src/dms.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "keywords": [
+    "aliyun",
+    "dms",
+    "node"
+  ],
+  "author": "Thonatos.Yang",
+  "license": "MIT",
+  "dependencies": {
+    "urllib": "^2.5.0",
+    "xml2json": "^0.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:MT-Libraries/node-aliyun-dms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MT-Libraries/node-aliyun-dms/issues",
+    "mail": ""
+  },
+  "devDependencies": {
+    "should": "^7.1.1"
+  }
+}
