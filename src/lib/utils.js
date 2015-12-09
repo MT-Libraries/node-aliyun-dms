@@ -2,7 +2,6 @@ var crypto = require('crypto');
 
 var utils = {};
 
-
 /**
  * 使用请求参数构造规范化的请求字符串
  * Canonicalized Query String
@@ -47,7 +46,7 @@ utils.topEscape = function (clearString) {
  * @param object
  * @returns {Array}
  */
-utils.objToArray = function (object) {
+utils.objToArray = function (object,clear) {
 
     var _array = [];
     var _obj = object || {};
@@ -57,12 +56,23 @@ utils.objToArray = function (object) {
     }
 
     for (var key in _obj) {
-        _array.push(key + '=' + utils.topEscape(_obj[key]));
+        if(clear){      
+                  
+            if(key === "HtmlBody" || key === "TextBody" || key === "Subject"){
+                _array.push(key + '=' + _obj[key]); 
+            }else{
+                _array.push(key + '=' + utils.topEscape(_obj[key]));
+            }
+                           
+        }else{
+            _array.push(key + '=' + utils.topEscape(_obj[key]));
+        }  
+            
     }
 
     return _array;
 };
-    
+
 /**
  * 根据 HMAC-SHA1 算法生成签名字符串
  *
@@ -95,7 +105,11 @@ utils.sortArray = function (arr) {
     return arr;
 };   
     
-    
+// 符号编码    
+utils.percentEncode = function (str) {
+    return str.replace('/', '%2F');
+};
+
 /**
  * 根据 IOS-8601标准 格式化日期
  *

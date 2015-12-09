@@ -10,6 +10,7 @@
  */
 
 var extend = require('util')._extend;
+var urlencode = require('urlencode');
 var aliyun = require('./lib/aliyun');
 var api = require('./lib/api');
 
@@ -31,14 +32,12 @@ module.exports = function (options) {
     };
 
     extend(defaults, options);
-
-
+    
     this.aliyun = aliyun(defaults);
     this.request = api(this.aliyun).request;
     this._submit = function (params, callback) {
         that.request(params, callback);
     };
-
 
     /**
      * sendSingleMail - 单个发送邮件
@@ -59,9 +58,9 @@ module.exports = function (options) {
             ReplyToAddress: replyToAddress,
             AddressType: addressType,
             ToAddress: toAddress,
-            Subject: subject,
-            HtmlBody: htmlBody,
-            TextBody: textBody
+            Subject:  urlencode(subject),
+            HtmlBody: urlencode(htmlBody),
+            TextBody: urlencode(textBody)
         }, callback);
     }
 

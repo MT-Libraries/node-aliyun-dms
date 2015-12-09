@@ -15,49 +15,30 @@ var aliyun = function (options) {
     var obj = {};
     var defaults = options || {};
     var _protected = {};
-
+      
     /**
-     * 根据规范构造用于计算签名的字符串
-     *
-     * @param args
-     * @returns {string|*}
-     */
-    utils.getStringToSign = function (args) {
-
-        var _stringToSign;
-        var _queryString;
-
-        // 符号编码
-        function percentEncode(str) {
-            return str.replace('/', '%2F');
-        }
-
-        // 排序后的字符串
-        _queryString = utils.sortArray(args.queryArray).join('&');
-
-        //console.log(_queryString);
-
-        _stringToSign =
-            args.httpMethod + "&" +
-            percentEncode("/") + "&" +
-            percentEncode(utils.topEscape(_queryString));
-
-        return _stringToSign;
-    };
-
+    * 根据规范构造用于计算签名的字符串
+    *
+    * @param args
+    * @returns {string|*}
+    */
+    _protected.getSortString = function(queryArray){
+        return utils.sortArray(queryArray).join('&');
+    }
+    
     /**
      * 生成查询对象
      *
      * @param queryObj
-     * @returns {{httpMethod: string, queryArray: (Array|*)}}
+     * @returns {queryArray: (Array|*)}
      */
-    _protected.getQueryObject = function (queryObj) {
+    _protected.getArgsArray = function (queryObj,sign) {
 
         var paramsObj,
             queryArray,
-            _httpMethod = "GET",
-            _date = new Date();
-
+            _date = new Date(),
+            _type = sign === "sign" ? true : false;
+            
         paramsObj = {
             'SignatureVersion': '1.0',
             'SignatureMethod': 'HMAC-SHA1',
@@ -69,28 +50,30 @@ var aliyun = function (options) {
         };
 
         extend(paramsObj, queryObj);
-
-        queryArray = utils.objToArray(paramsObj);
-
-        return {
-            'httpMethod': _httpMethod,
-            'queryArray': queryArray
-        };
-
+        
+        queryArray = utils.objToArray(paramsObj,_type);
+               
+        return queryArray;
     };
-
+    
     /**
-     * 生成签名字符串
+     * 生成签名
      *
      * @param args
      * @returns {string}
      */
-    _protected.getSignatureString = function (args) {
+    _protected.getSignature = function (obj) {
 
-        var _stringToSign = utils.getStringToSign(args);
-
-        //console.log(_stringToSign);
-
+        var _stringToSign;
+        var _queryString;
+        
+        _queryString = _protected.getSortString(obj);
+        
+        _stringToSign =
+            "GET" + "&" +
+            utils.percentEncode("/") + "&" +
+            utils.percentEncode(utils.topEscape(_queryString));
+        
         return utils.hMacSha1(_stringToSign, defaults.accesskey + '&');
     };
 
@@ -102,12 +85,10 @@ var aliyun = function (options) {
      */
     obj.getQueryString = function (params) {
 
-        var queryObject = _protected.getQueryObject(params);
-        var signature = _protected.getSignatureString(queryObject);
-
-        //console.log(signature);
-
-        return "http://" + defaults.host + "/?" + 'Signature=' + signature + '&' + queryObject.queryArray.join('&');
+        var signArray = _protected.getArgsArray(params,"sign");
+        var signature = _protected.getSignature(signArray);
+       
+        return "http://" + defaults.host + "/?" + 'Signature=' + signature + '&' + _protected.getSortString(signArray);
     };
 
     return obj;
