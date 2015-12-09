@@ -1,6 +1,6 @@
 {
   "name": "node-aliyun-dms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "aliyun direct mail service for nodejs",
   "homepage": "https://github.com/MT-Libraries/node-aliyun-dms",
   "main": "./src/dms.js",
