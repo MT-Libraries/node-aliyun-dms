@@ -25,7 +25,7 @@ var api = function (bundleInterface) {
         // queryString
         _queryString = _interface.getQueryString(params);
         
-        console.log(_queryString);
+        //console.log(_queryString);
                 
         urllib.request(_queryString, {
             method: 'GET',
